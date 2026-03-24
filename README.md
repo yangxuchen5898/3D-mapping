@@ -67,6 +67,14 @@ align:
 
 期望的数据集格式为标准 COLMAP 处理后或 NeRF-Synthetic 原生形式，要求与 3DGS/2DGS 的组织一致。
 
+数据集下载
+
+[NeRF Synthetic 的 lego 场景](https://huggingface.co/datasets/rishitdagli/nerf-gs-datasets/tree/main/lego)
+
+```powershell
+python download_lego.py
+```
+
 ## 项目实现进程说明
 
 本项目现处用于实现课程目标和评测的**第一阶段（最小骨架阶段）**，包含的独立模块位于：
