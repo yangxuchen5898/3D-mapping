@@ -25,6 +25,19 @@ conda activate 3d-mapping
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 ```
 
+## 新建 `third_party` 文件夹
+
+在这个文件夹中执行：
+```bash
+git clone https://gitlab.inria.fr/bkerbl/simple-knn.git
+git clone https://github.com/hbb1/diff-surfel-rasterization
+```
+
+在 `third_party/diff-surfel-rasterization/third_party` 这个文件夹中执行：
+```bash
+git clone https://github.com/g-truc/glm
+```
+
 **关键步骤：安装内置的第三方本地扩展：**
 注意：请确保系统中包含可用的 CUDA 编译器 (`nvcc`)。
 ```bash
