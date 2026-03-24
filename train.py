@@ -68,6 +68,7 @@ def training(dataset, opt, pipe, cfg, testing_iterations, saving_iterations, che
     align_cfg = cfg.get('align', {})
     enable_align = align_cfg.get('enable', False) and cfg.get('mode', 'baseline') == 'ours'
     knn_k = align_cfg.get('knn_k', 10)
+    knn_chunk_size = align_cfg.get('knn_chunk_size', 4096)
     sigma_d = align_cfg.get('sigma_d', 0.01)
     beta1 = align_cfg.get('beta1', 1.0)
     beta2 = align_cfg.get('beta2', 0.1)
@@ -124,7 +125,7 @@ def training(dataset, opt, pipe, cfg, testing_iterations, saving_iterations, che
                 rotation = gaussians.get_rotation
                 
                 # knn graph should be detached to prevent gradient flow to neighbor search
-                knn_idx = build_knn_graph(xyz.detach(), knn_k)
+                knn_idx = build_knn_graph(xyz.detach(), knn_k, chunk_size=knn_chunk_size)
                 normals = orientation_to_normal(rotation)
                 
                 align_loss, l_plane, l_normal_align = compute_alignment_loss(

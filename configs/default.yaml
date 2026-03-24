@@ -5,6 +5,7 @@ align:
   beta1: 1.0 # weight for L_plane
   beta2: 0.1 # weight for L_normal
   knn_k: 10 # number of neighbors for KNN
+  knn_chunk_size: 4096 # chunk size to prevent OOM
   sigma_d: 0.01 # distance weight control
   lambda2_max: 0.5 # maximum weight for alignment loss
   warmup_iters: 3000 # iterations to wait before strictly enabling align loss
