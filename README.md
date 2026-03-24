@@ -15,20 +15,26 @@
 
 ## 安装
 
-由于本仓库是 2DGS 的派生项目，所有的基础环境与 CUDA 依赖和原作者的要求保持一致。
+本项目作为一个**独立派生仓库**，已经将所需的第三方依赖代码（CUDA 扩展）内置于 `third_party` 目录下，您无需再执行任何 submodule 拉取命令。
 
+请准备一个支持 CUDA 的 Python 3.10+ 环境（示例使用 Conda）：
 ```bash
-# 如果你已经拥有 3dgs 或 2dgs 的相关环境，直接激活它即可：
-conda activate <YOUR_2DGS_ENV>
-
-# 否则请参考 2d-gaussian-splatting 原则安装环境，并补齐本项目下 submodules 的内容编译：
-pip install submodules/diff-surfel-rasterization
-pip install submodules/simple-knn
+conda create -n 3d-mapping python=3.10
+conda activate 3d-mapping
+# 根据您的系统和 CUDA 版本，安装适配的 PyTorch (这里以 CUDA 11.8 为例)
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 ```
 
-此外，你可能需要安装 Python yaml 库用于读取设定：
+**关键步骤：安装内置的第三方本地扩展：**
+注意：请确保系统中包含可用的 CUDA 编译器 (`nvcc`)。
 ```bash
-pip install pyyaml
+pip install -e third_party/simple-knn
+pip install -e third_party/diff-surfel-rasterization
+```
+
+安装其他常规依赖库：
+```bash
+pip install pyyaml plyfile tqdm scipy
 ```
 
 ## 运行
@@ -45,6 +51,22 @@ python train.py -s <path_to_COLMAP_or_NeRF_synthetic_dataset> --config configs/d
 你只需要在 `configs/default.yaml` 中将 `mode` 设为 `baseline`。这会强制让 `lambda2=0`，完全退回到原始 2DGS 状态。
 ```bash
 python train.py -s <path_to_COLMAP_or_NeRF_synthetic_dataset> --config configs/default.yaml
+```
+
+## 测试与快速验证
+
+我们推荐使用轻量的 Blender (NeRF Synthetic) 的 Lego 数据集通过少量迭代进行快速的训练链路验证。
+
+### 1. 快速验证原始 2DGS 逻辑 (Baseline 模式)
+在 `configs/default.yaml` 中将 `mode` 设为 `baseline`，然后运行 100 iterations：
+```bash
+python train.py -s data/nerf_synthetic/lego -m output/baseline_test --iterations 100 --config configs/default.yaml
+```
+
+### 2. 快速验证带有 Alignment Loss 的模式 (Ours)
+在 `configs/default.yaml` 中将 `mode` 设为 `ours`，测试正则算法前反向传播：
+```bash
+python train.py -s data/nerf_synthetic/lego -m output/ours_test --iterations 100 --config configs/default.yaml
 ```
 
 ## 参数说明 (`configs/default.yaml`)

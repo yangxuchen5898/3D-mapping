@@ -8,5 +8,5 @@ align:
   knn_chunk_size: 4096 # chunk size to prevent OOM
   sigma_d: 0.01 # distance weight control
   lambda2_max: 0.5 # maximum weight for alignment loss
-  warmup_iters: 3000 # iterations to wait before strictly enabling align loss
-  ramp_iters: 4000 # iterations it takes to linearly increase to lambda2_max
+  warmup_iters: 10 # iterations to wait before strictly enabling align loss
+  ramp_iters: 50 # iterations it takes to linearly increase to lambda2_max

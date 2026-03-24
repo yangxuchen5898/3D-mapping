@@ -1,0 +1,1 @@
+Namespace(sh_degree=3, source_path='D:\\github_projects\\some-3D-mapping-projects\\3D-mapping\\data\\nerf_synthetic\\lego', model_path='output/baseline_test', images='images', resolution=-1, white_background=False, data_device='cuda', eval=False, render_items=['RGB', 'Alpha', 'Normal', 'Depth', 'Edge', 'Curvature'])
