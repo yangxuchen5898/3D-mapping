@@ -134,8 +134,16 @@ data/
 ## train
 
 ```powershell
-python train.py -s data/mipnerf360/360_v2/garden -m output/m360_garden --config configs/default.yaml --eval --eval_render
-python train.py -s data/dtu/scan105 -m output/dtu_scan105 --config configs/default.yaml -r 2 --depth_ratio 1 --eval --eval_geometry --dtu_gt_dir data/dtu/scan105/GT
+CUDA_VISIBLE_DEVICES=0 nohup python train.py -s data/360_v2/garden -m output/m360_garden --config configs/default.yaml --eval --eval_render --iterations 1000 --port 6010 >> m360_garden.log 2>&1 &
+CUDA_VISIBLE_DEVICES=0 nohup python train.py -s data/360_v2/stump -m output/m360_stump --config configs/default.yaml --eval --eval_render --iterations 1000 --port 6011 >> m360_stump.log 2>&1 &
+CUDA_VISIBLE_DEVICES=0 nohup python train.py -s data/360_v2/bonsai -m output/m360_bonsai --config configs/default.yaml --eval --eval_render --iterations 1000 --port 6012 >> m360_bonsai.log 2>&1 &
+CUDA_VISIBLE_DEVICES=1 nohup python train.py -s data/360_v2/room -m output/m360_room --config configs/default.yaml --eval --eval_render --iterations 1000 --port 6013 >> m360_room.log 2>&1 &
+CUDA_VISIBLE_DEVICES=1 nohup python train.py -s data/360_v2/counter -m output/m360_counter --config configs/default.yaml --eval --eval_render --iterations 1000 --port 6014 >> m360_counter.log 2>&1 &
+CUDA_VISIBLE_DEVICES=1 nohup python train.py -s data/DTU/scan24 -m output/dtu_scan24 --config configs/default.yaml -r 2 --depth_ratio 1 --eval --eval_geometry --dtu_gt_dir data/DTU/scan24/points.ply --iterations 1000 --port 6015 >> DTU_scan24.log 2>&1 &
+CUDA_VISIBLE_DEVICES=2 nohup python train.py -s data/DTU/scan40 -m output/dtu_scan40 --config configs/default.yaml -r 2 --depth_ratio 1 --eval --eval_geometry --dtu_gt_dir data/DTU/scan40/points.ply --iterations 1000 --port 6016 >> DTU_scan40.log 2>&1 &
+CUDA_VISIBLE_DEVICES=2 nohup python train.py -s data/DTU/scan63 -m output/dtu_scan63 --config configs/default.yaml -r 2 --depth_ratio 1 --eval --eval_geometry --dtu_gt_dir data/DTU/scan63/points.ply --iterations 1000 --port 6017 >> DTU_scan63.log 2>&1 &
+CUDA_VISIBLE_DEVICES=3 nohup python train.py -s data/DTU/scan105 -m output/dtu_scan105 --config configs/default.yaml -r 2 --depth_ratio 1 --eval --eval_geometry --dtu_gt_dir data/DTU/scan105/points.ply --iterations 1000 --port 6018 >> DTU_scan105.log 2>&1 &
+CUDA_VISIBLE_DEVICES=3 nohup python train.py -s data/DTU/scan106 -m output/dtu_scan106 --config configs/default.yaml -r 2 --depth_ratio 1 --eval --eval_geometry --dtu_gt_dir data/DTU/scan106/points.ply --iterations 1000 --port 6019 >> DTU_scan106.log 2>&1 &
 ```
 
 ## 服务器上遇到的一些情况

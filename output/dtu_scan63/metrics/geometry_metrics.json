@@ -1,0 +1,10 @@
+{
+    "Chamfer_Distance": 0.04507490556479128,
+    "Mean_Accuracy": 0.06777799972057538,
+    "Mean_Completeness": 0.022371811409007177,
+    "Normal_Consistency": 0.6186561030662501,
+    "F_Scores": {
+        "F-score_1.0": 0.9970066340423376,
+        "F-score_2.0": 0.9988195116623815
+    }
+}

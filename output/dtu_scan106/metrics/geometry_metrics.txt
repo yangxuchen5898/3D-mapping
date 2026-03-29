@@ -1,0 +1,6 @@
+Chamfer Distance: 0.011054
+Accuracy: 0.014743
+Completeness: 0.007365
+F-score_1.0: 0.999968
+F-score_2.0: 0.999989
+Normal Consistency: 0.634636

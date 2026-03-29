@@ -1,0 +1,1 @@
+Namespace(sh_degree=3, source_path='/data/yxc/3D-mapping/data/DTU/scan40', model_path='output/dtu_scan40', images='images', resolution=2, white_background=False, data_device='cuda', eval=True, render_items=['RGB', 'Alpha', 'Normal', 'Depth', 'Edge', 'Curvature'])
