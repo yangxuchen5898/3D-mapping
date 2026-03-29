@@ -38,7 +38,7 @@ def load_config(config_path):
     with open(config_path, 'r') as f:
         return yaml.safe_load(f)
 
-def training(dataset, opt, pipe, cfg, testing_iterations, saving_iterations, checkpoint_iterations, checkpoint):
+def training(dataset, opt, pipe, cfg, testing_iterations, saving_iterations, checkpoint_iterations, checkpoint, eval_render, eval_geometry, dtu_gt_dir, args):
     first_iter = 0
     tb_writer = prepare_output_and_logger(dataset)
     gaussians = GaussianModel(dataset.sh_degree)
@@ -199,6 +199,20 @@ def training(dataset, opt, pipe, cfg, testing_iterations, saving_iterations, che
                 print(f"\n[ITER {iteration}] Saving Checkpoint")
                 torch.save((gaussians.capture(), iteration), scene.model_path + "/chkpnt" + str(iteration) + ".pth")
 
+    # Post-training Evaluation
+    if eval_render:
+        try:
+            from tools.eval_render_metrics import evaluate_render_metrics
+            evaluate_render_metrics(args.model_path, scene, pipe, gaussians, background)
+        except Exception as e:
+            print(f"Render Evaluation failed: {e}")
+
+    if eval_geometry:
+        try:
+            from tools.eval_geometry_metrics import evaluate_geometry_metrics
+            evaluate_geometry_metrics(args.model_path, gaussians, dtu_gt_dir)
+        except Exception as e:
+            print(f"Geometry Evaluation failed: {e}")
 
 def prepare_output_and_logger(args):    
     if not args.model_path:
@@ -228,7 +242,12 @@ if __name__ == "__main__":
     parser.add_argument("--checkpoint_iterations", nargs="+", type=int, default=[])
     parser.add_argument("--start_checkpoint", type=str, default=None)
     parser.add_argument("--config", type=str, default="configs/default.yaml", help="Path to config file")
-    
+
+    # Evaluation Arguments
+    parser.add_argument("--eval_render", action="store_true", help="Evaluate PSNR/SSIM/LPIPS after training")
+    parser.add_argument("--eval_geometry", action="store_true", help="Evaluate Chamfer/F-score after training")
+    parser.add_argument("--dtu_gt_dir", type=str, default=None, help="Path to DTU GT dir for geometry eval")
+
     args = parser.parse_args(sys.argv[1:])
     args.save_iterations.append(args.iterations)
     
@@ -240,5 +259,5 @@ if __name__ == "__main__":
     network_gui.init(args.ip, args.port)
     torch.autograd.set_detect_anomaly(args.detect_anomaly)
     
-    training(lp.extract(args), op.extract(args), pp.extract(args), cfg, args.test_iterations, args.save_iterations, args.checkpoint_iterations, args.start_checkpoint)
+    training(lp.extract(args), op.extract(args), pp.extract(args), cfg, args.test_iterations, args.save_iterations, args.checkpoint_iterations, args.start_checkpoint, args.eval_render, args.eval_geometry, args.dtu_gt_dir, args)
     print("\nTraining complete.")

@@ -41,13 +41,13 @@ git clone https://github.com/g-truc/glm
 **关键步骤：安装内置的第三方本地扩展：**
 注意：请确保系统中包含可用的 CUDA 编译器 (`nvcc`)。
 ```bash
-pip install -e third_party/simple-knn
-pip install -e third_party/diff-surfel-rasterization
+pip install ./third_party/simple-knn --no-build-isolation
+pip install ./third_party/diff-surfel-rasterization --no-build-isolation
 ```
 
 安装其他常规依赖库：
 ```bash
-pip install pyyaml plyfile tqdm scipy
+pip install pyyaml plyfile tqdm scipy lpips pandas trimesh open3d opencv-python
 ```
 
 ## 运行
@@ -102,12 +102,26 @@ align:
 
 期望的数据集格式为标准 COLMAP 处理后或 NeRF-Synthetic 原生形式，要求与 3DGS/2DGS 的组织一致。
 
-数据集下载
+### 用于验证是否跑通的数据集下载
 
 [NeRF Synthetic 的 lego 场景](https://huggingface.co/datasets/rishitdagli/nerf-gs-datasets/tree/main/lego)
 
 ```powershell
 python download_lego.py
+```
+
+这个数据集的结构
+
+```
+data/
+└── nerf_synthetic/
+    └── lego/
+      ├── test/
+      ├── train/
+      ├── val/
+      ├── transforms_test.json
+      ├── transforms_train.json
+      └── transforms_val.json
 ```
 
 ## 项目实现进程说明
@@ -116,3 +130,56 @@ python download_lego.py
 - `losses/alignment_loss.py`: 完全可导的张量正则组件。
 - `utils/knn_graph.py`: Chunk-based 的动态邻域生成器。
 - `utils/schedules.py`: 针对学习进程的标量坡度调度器。
+
+## train
+
+```powershell
+python train.py -s data/mipnerf360/360_v2/garden -m output/m360_garden --config configs/default.yaml --eval --eval_render
+python train.py -s data/dtu/scan105 -m output/dtu_scan105 --config configs/default.yaml -r 2 --depth_ratio 1 --eval --eval_geometry --dtu_gt_dir data/dtu/scan105/GT
+```
+
+## 服务器上遇到的一些情况
+
+### 端口占用需要加 `--port`
+```powershell
+nohup python train.py -s data/360_v2/garden -m output/m360_garden --config configs/default.yaml --eval --eval_render --port 6010 >> m360_garden.log 2>&1 &
+```
+
+### 没有 `nvcc`
+
+```powershell
+conda install -c nvidia cuda-nvcc=11.8
+conda install -c conda-forge gxx_linux-64=10
+```
+
+指定环境变量
+
+```powershell
+export CC=$CONDA_PREFIX/bin/x86_64-conda-linux-gnu-cc
+export CXX=$CONDA_PREFIX/bin/x86_64-conda-linux-gnu-c++
+export CUDA_HOME=$CONDA_PREFIX
+export PATH=$CUDA_HOME/bin:$PATH
+export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
+```
+
+安装工具包
+
+```powershell
+conda install -c nvidia cuda-toolkit=11.8
+```
+
+指定环境变量
+
+```powershell
+export CUDA_HOME=$CONDA_PREFIX
+export PATH=$CUDA_HOME/bin:$PATH
+export CPATH=$CUDA_HOME/include:$CPATH
+export LIBRARY_PATH=$CUDA_HOME/lib64:$LIBRARY_PATH
+export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
+export CC=$CONDA_PREFIX/bin/x86_64-conda-linux-gnu-cc
+export CXX=$CONDA_PREFIX/bin/x86_64-conda-linux-gnu-c++
+```
+
+```powershell
+conda install -c nvidia/label/cuda-11.8.0 cuda
+```
